@@ -5,9 +5,8 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.querySelector("canvas");
     world = new World(canvas, keyboard);
-
-    
 }
+
 
 window.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
