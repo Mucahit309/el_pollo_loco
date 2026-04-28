@@ -17,10 +17,10 @@ class ThrowableObject extends MovableObject {
     }
 
     throw() {
-        this.speedY = 30;
+        this.speedY = 15;
         this.applyGravity();
         setInterval(() => {
-            this.x += 5;
+            this.x += 10;
         }, 25);
     }
 }
