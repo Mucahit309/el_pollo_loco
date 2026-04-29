@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El Pollo Loco</title>
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
@@ -22,13 +22,23 @@
     <script src="models/level.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="models/levels/level1.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body onload="init()">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body onload="init()">
     <h1>El Pollo Loco</h1>
 
+<div class="game-container">
     <canvas id="canvas" width="720" height="480"></canvas>
+    
+    <div id="gameOverScreen" class="game-over-screen d-none">
+        <img class="bg-image" src="img/9_intro_outro_screens/game_over/game over.png" alt="Game Over">
+        <div class="buttons">
+            <button onclick="mainMenu()">Main Menu</button>
+            <button onclick="restartGame()">Retry</button>
+        </div>
+    </div>
+</div>
 
     <script src="js/game.js"></script>
-</body>
+  </body>
 </html>

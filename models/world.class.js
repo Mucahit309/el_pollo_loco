@@ -26,7 +26,8 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkThrowObjects();
-    }, 100);
+      this.checkGameOver();
+    }, 200);
   }
 
   checkCollisions() {
@@ -71,6 +72,14 @@ class World {
       setTimeout(() => {
         this.isThrowing = false;
       }, 800);
+    }
+  }
+
+  checkGameOver() {
+    if (this.character.isDead()) {
+      setTimeout(() => {
+        showGameOverScreen();
+      }, 1000);
     }
   }
 

@@ -7,6 +7,25 @@ function init() {
     world = new World(canvas, keyboard);
 }
 
+function showGameOverScreen() {
+    document.getElementById('gameOverScreen').classList.remove('d-none');
+    clearAllIntervals();
+}
+
+function clearAllIntervals() {
+    for (let i = 1; i < 9999; i++) {
+        window.clearInterval(i);
+    }
+}
+
+function restartGame() {
+    window.location.reload();
+}
+
+function mainMenu() {
+    window.location.href = "index.html";
+}
+
 
 window.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
