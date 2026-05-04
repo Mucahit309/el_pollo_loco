@@ -32,26 +32,27 @@ class World {
     }, 200);
   }
 
-  checkCollisions() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy) && !enemy.isDead) {
-        if (this.character.isAboveGround() && this.character.speedY < 0) {
-          enemy.die();
-          this.character.jump();
+checkCollisions() {
+  this.level.enemies.forEach((enemy) => {
+    if (this.character.isColliding(enemy) && !enemy.isDead) {
+      if (this.character.isAboveGround() && this.character.speedY < 0) {
+        enemy.die();
+        this.character.jump();
 
-          setTimeout(() => {
-            let enemyIndex = this.level.enemies.indexOf(enemy);
-            if (enemyIndex > -1) {
-              this.level.enemies.splice(enemyIndex, 1);
-            }
-          }, 2000);
-        } else {
-          this.character.hit();
-        }
+        setTimeout(() => {
+          let enemyIndex = this.level.enemies.indexOf(enemy);
+          if (enemyIndex > -1) {
+            this.level.enemies.splice(enemyIndex, 1);
+          }
+        }, 2000);
+      } else {
+        this.character.hit();
+        this.statusBar.setPercentage(this.character.energy);
       }
-    });
-    this.checkBottleCollisions();
-  }
+    }
+  });
+  this.checkBottleCollisions();
+}
 
   checkBottleCollisions() {
     if (this.level.bottles) {
