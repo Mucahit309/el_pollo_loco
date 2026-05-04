@@ -31,6 +31,7 @@ class Chicken extends MovableObject {
     setInterval(() => {
       if (!this.isDead) {
         this.moveLeft();
+        this.otherDirection = false;
       }
     }, 1000 / 60);
 
