@@ -33,14 +33,23 @@ class World {
   }
 
   checkCollisions() {
-    if (this.level.enemies) {
-      this.level.enemies.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy) && !enemy.isDead) {
+        if (this.character.isAboveGround() && this.character.speedY < 0) {
+          enemy.die();
+          this.character.jump();
+
+          setTimeout(() => {
+            let enemyIndex = this.level.enemies.indexOf(enemy);
+            if (enemyIndex > -1) {
+              this.level.enemies.splice(enemyIndex, 1);
+            }
+          }, 2000);
+        } else {
           this.character.hit();
-          this.statusBar.setPercentage(this.character.energy);
         }
-      });
-    }
+      }
+    });
     this.checkBottleCollisions();
   }
 
@@ -71,7 +80,7 @@ class World {
       this.isThrowing = true;
       let bottle = new ThrowableObject(
         this.character.x + 100,
-        this.character.y + 100
+        this.character.y + 100,
       );
       this.throwableObjects.push(bottle);
 
@@ -117,7 +126,7 @@ class World {
     this.addObjectToMap(this.level.backgroundObjects);
 
     this.ctx.translate(-this.camera_x, 0);
-    
+
     // Space for fixed objects (statusbar)
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarBottles);
