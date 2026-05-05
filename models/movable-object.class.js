@@ -9,7 +9,7 @@ class MovableObject extends DrawableObject {
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   };
 
   applyGravity() {
@@ -22,7 +22,7 @@ class MovableObject extends DrawableObject {
   }
 
   isAboveGround() {
-    if(this instanceof ThrowableObject) {
+    if (this instanceof ThrowableObject) {
       return true;
     } else {
       return this.y < 135;
@@ -38,8 +38,8 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  hit() {
-    this.energy -= 5;
+hit(damage = 20) {
+    this.energy -= damage;
     if (this.energy < 0) {
       this.energy = 0;
     } else {

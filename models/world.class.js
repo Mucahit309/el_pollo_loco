@@ -29,14 +29,15 @@ class World {
       this.checkThrowObjects();
       this.checkGameOver();
       this.checkCoinCollisions();
+      this.checkBottleCollisions();
     }, 200);
   }
 
 checkCollisions() {
   this.level.enemies.forEach((enemy) => {
-    if (this.character.isColliding(enemy) && !enemy.isDead) {
+    if (this.character.isColliding(enemy) && !enemy.isDead()) {
       if (this.character.isAboveGround() && this.character.speedY < 0) {
-        enemy.die();
+        enemy.hit(100);
         this.character.jump();
 
         setTimeout(() => {
@@ -45,8 +46,8 @@ checkCollisions() {
             this.level.enemies.splice(enemyIndex, 1);
           }
         }, 2000);
-      } else {
-        this.character.hit();
+      } else if (!this.character.isHurt()) {
+        this.character.hit(20);
         this.statusBar.setPercentage(this.character.energy);
       }
     }
@@ -54,7 +55,7 @@ checkCollisions() {
   this.checkBottleCollisions();
 }
 
-  checkBottleCollisions() {
+checkBottleCollisions() {
     if (this.level.bottles) {
       this.level.bottles.forEach((bottle, index) => {
         if (this.character.isColliding(bottle)) {
@@ -70,6 +71,15 @@ checkCollisions() {
         }
       });
     }
+
+    this.throwableObjects.forEach((bottle, bottleIndex) => {
+      this.level.enemies.forEach((enemy) => {
+        if (bottle.isColliding(enemy) && !enemy.isDead()) {
+          enemy.hit(bottle.damage);
+          this.throwableObjects.splice(bottleIndex, 1);
+        }
+      });
+    });
   }
 
   checkThrowObjects() {
