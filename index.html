@@ -24,22 +24,62 @@
     <script src="models/level.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="models/levels/level1.js"></script>
+
+    <script src="models/ui.class.js"></script>
+
     <link rel="stylesheet" href="style.css" />
   </head>
   <body onload="init()">
     <h1>El Pollo Loco</h1>
 
-<div class="game-container">
-    <canvas id="canvas" width="720" height="480"></canvas>
-    
-    <div id="gameOverScreen" class="game-over-screen d-none">
-        <img class="bg-image" src="img/9_intro_outro_screens/game_over/game over.png" alt="Game Over">
-        <div class="buttons">
-            <button onclick="mainMenu()">Main Menu</button>
-            <button onclick="restartGame()">Retry</button>
+    <div class="game-container">
+      <canvas id="canvas" width="720" height="480"></canvas>
+
+      <div id="start-screen" class="game-screen">
+        <div class="button-container">
+          <button id="btn-start" class="game-button">Start Game</button>
+          <button id="btn-controls" class="game-button">Controls</button>
         </div>
+      </div>
+
+      <div id="controls-screen" class="game-screen hidden">
+        <button id="btn-close-controls" class="close-button">X</button>
+        <h2>Controls</h2>
+        <div class="controls-list">
+          <div class="control-row">
+            <div class="keys">
+              <span class="game-key">◀</span>
+              <span class="game-key">▶</span>
+            </div>
+            <span class="control-desc">Move Left / Right</span>
+          </div>
+          <div class="control-row">
+            <div class="keys">
+              <span class="game-key">D</span>
+            </div>
+            <span class="control-desc">Throw Bottle</span>
+          </div>
+          <div class="control-row">
+            <div class="keys">
+              <span class="game-key wide-key">SPACE</span>
+            </div>
+            <span class="control-desc">Jump</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="game-over-screen" class="game-over-screen d-none">
+        <img
+          class="bg-image"
+          src="img/9_intro_outro_screens/game_over/game over.png"
+          alt="Game Over"
+        />
+        <div class="buttons">
+          <button class="game-button" onclick="mainMenu()">Main Menu</button>
+          <button class="game-button" onclick="restartGame()">Retry</button>
+        </div>
+      </div>
     </div>
-</div>
 
     <script src="js/game.js"></script>
   </body>
