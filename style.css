@@ -15,6 +15,7 @@ canvas {
   width: 720px;
   height: 480px;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .game-over-screen {
@@ -29,7 +30,7 @@ canvas {
   align-items: center;
   padding-bottom: 40px;
   z-index: 10;
-  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .game-over-screen .bg-image {
@@ -86,7 +87,7 @@ canvas {
   padding-bottom: 10px;
 }
 
-#controls-screen, #game-over-screen {
+#controls-screen {
   background-color: rgba(0, 0, 0, 0.85);
   color: white;
 }
@@ -95,9 +96,10 @@ canvas {
   display: none !important;
 }
 
-.button-container {
+.button-container, .buttons {
   display: flex;
   gap: 20px;
+  z-index: 20;
 }
 
 .game-button {

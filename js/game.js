@@ -19,6 +19,12 @@ function showGameOverScreen() {
     clearAllIntervals();
 }
 
+function showWinScreen() {
+    document.getElementById("win-screen").classList.remove("d-none");
+    document.getElementById("win-screen").style.display = "flex";
+    clearAllIntervals();
+}
+
 function clearAllIntervals() {
     for (let i = 1; i < 9999; i++) {
         window.clearInterval(i);
@@ -28,6 +34,8 @@ function clearAllIntervals() {
 function restartGame() {
     document.getElementById("game-over-screen").classList.add("d-none");
     document.getElementById("game-over-screen").style.display = "none";
+    document.getElementById("win-screen").classList.add("d-none");
+    document.getElementById("win-screen").style.display = "none";
     startGame();
 }
 
