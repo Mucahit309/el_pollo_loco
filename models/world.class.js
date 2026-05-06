@@ -33,29 +33,29 @@ class World {
     }, 200);
   }
 
-checkCollisions() {
-  this.level.enemies.forEach((enemy) => {
-    if (this.character.isColliding(enemy) && !enemy.isDead()) {
-      if (this.character.isAboveGround() && this.character.speedY < 0) {
-        enemy.hit(100);
-        this.character.jump();
+  checkCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy) && !enemy.isDead()) {
+        if (this.character.isAboveGround() && this.character.speedY < 0) {
+          enemy.hit(100);
+          this.character.jump();
 
-        setTimeout(() => {
-          let enemyIndex = this.level.enemies.indexOf(enemy);
-          if (enemyIndex > -1) {
-            this.level.enemies.splice(enemyIndex, 1);
-          }
-        }, 2000);
-      } else if (!this.character.isHurt()) {
-        this.character.hit(20);
-        this.statusBar.setPercentage(this.character.energy);
+          setTimeout(() => {
+            let enemyIndex = this.level.enemies.indexOf(enemy);
+            if (enemyIndex > -1) {
+              this.level.enemies.splice(enemyIndex, 1);
+            }
+          }, 2000);
+        } else if (!this.character.isHurt()) {
+          this.character.hit(20);
+          this.statusBar.setPercentage(this.character.energy);
+        }
       }
-    }
-  });
-  this.checkBottleCollisions();
-}
+    });
+    this.checkBottleCollisions();
+  }
 
-checkBottleCollisions() {
+  checkBottleCollisions() {
     if (this.level.bottles) {
       this.level.bottles.forEach((bottle, index) => {
         if (this.character.isColliding(bottle)) {
@@ -72,11 +72,18 @@ checkBottleCollisions() {
       });
     }
 
-    this.throwableObjects.forEach((bottle, bottleIndex) => {
+    this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
-        if (bottle.isColliding(enemy) && !enemy.isDead()) {
+        if (bottle.isColliding(enemy) && !enemy.isDead() && !bottle.isSplashed) {
+          bottle.splash();
           enemy.hit(bottle.damage);
-          this.throwableObjects.splice(bottleIndex, 1);
+          
+          setTimeout(() => {
+            let index = this.throwableObjects.indexOf(bottle);
+            if (index > -1) {
+              this.throwableObjects.splice(index, 1);
+            }
+          }, 400);
         }
       });
     });
@@ -138,7 +145,6 @@ checkBottleCollisions() {
 
     this.ctx.translate(-this.camera_x, 0);
 
-    // Space for fixed objects (statusbar)
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarBottles);
     this.addToMap(this.coinBar);

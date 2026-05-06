@@ -33,7 +33,9 @@
   <body onload="init()">
     <h1>El Pollo Loco</h1>
 
-    <div class="game-container">
+    <div class="game-container" id="fullscreen-container">
+      <button id="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+      
       <canvas id="canvas" width="720" height="480"></canvas>
 
       <div id="start-screen" class="game-screen">
