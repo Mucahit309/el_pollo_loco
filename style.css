@@ -2,12 +2,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0;
+  padding: 20px 0;
+  font-family: sans-serif;
+  background-color: white;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 canvas {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .game-container {
@@ -20,13 +31,23 @@ canvas {
 }
 
 .game-container:fullscreen {
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: auto;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: 720 / 480;
+  margin: auto;
+  background-color: black;
 }
 
 .game-container:-webkit-full-screen {
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: auto;
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: 720 / 480;
+  margin: auto;
+  background-color: black;
 }
 
 #fullscreen-btn {
@@ -160,7 +181,7 @@ canvas {
 
 .close-button {
   position: absolute;
-  top: 20px;
+  top: 60px;
   right: 20px;
   background-color: #f44336;
   color: white;
@@ -216,4 +237,114 @@ canvas {
 
 .d-none {
   display: none !important;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 1366px) and (hover: none) and (pointer: coarse) {
+  body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #222;
+    display: block;
+  }
+
+  h1 {
+    display: none !important;
+  }
+
+  .game-container {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+  }
+
+  #fullscreen-btn {
+    display: none !important;
+  }
+
+  #btn-controls {
+    display: none !important;
+  }
+
+  #start-screen {
+    background-position: center top;
+    padding-bottom: 0;
+  }
+
+  #start-screen .button-container {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    width: auto;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-only {
+    display: flex;
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 50;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+
+  .touch-btn {
+    pointer-events: auto;
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .movement-controls, .action-controls {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1366px) and (hover: none) and (pointer: coarse) and (orientation: portrait) {
+  body::after {
+    content: "Please rotate your device to landscape mode!";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    font-family: sans-serif;
+    font-size: 24px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .game-container {
+    display: none;
+  }
 }
