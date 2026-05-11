@@ -4,6 +4,7 @@ let keyboard = new Keyboard();
 let uiManager;
 let gameStartSound = new Audio('sounds/game/gameStart.mp3');
 let backgroundTheme = new Audio('sounds/game/backgoundtheme.wav');
+let isMuted = false;
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -14,6 +15,58 @@ function init() {
   backgroundTheme.play().catch(() => {});
 }
 
+function toggleMute() {
+  isMuted = !isMuted;
+  let btn = document.getElementById('mute-btn');
+  
+  if (isMuted) {
+    btn.innerHTML = 'Unmute';
+    backgroundTheme.muted = true;
+    gameStartSound.muted = true;
+    if(world) muteWorldSounds(true);
+  } else {
+    btn.innerHTML = 'Mute';
+    backgroundTheme.muted = false;
+    gameStartSound.muted = false;
+    if(world) muteWorldSounds(false);
+  }
+}
+
+function muteWorldSounds(status) {
+  if (world && world.character) {
+    if (world.character.walking_sound) world.character.walking_sound.muted = status;
+    if (world.character.jumping_sound) world.character.jumping_sound.muted = status;
+    if (world.character.dead_sound) world.character.dead_sound.muted = status;
+    if (world.character.hurt_sound) world.character.hurt_sound.muted = status;
+    if (world.character.snoring_sound) world.character.snoring_sound.muted = status;
+  }
+  
+  if (world && world.level) {
+    if (world.level.enemies) {
+      world.level.enemies.forEach(enemy => {
+        if(enemy.dead_sound) enemy.dead_sound.muted = status;
+        if(enemy.approach_sound) enemy.approach_sound.muted = status;
+      });
+    }
+    if (world.level.coins) {
+      world.level.coins.forEach(coin => {
+        if(coin.collect_sound) coin.collect_sound.muted = status;
+      });
+    }
+    if (world.level.bottles) {
+      world.level.bottles.forEach(bottle => {
+        if(bottle.collect_sound) bottle.collect_sound.muted = status;
+      });
+    }
+  }
+
+  if (world && world.throwableObjects) {
+    world.throwableObjects.forEach(bottle => {
+      if(bottle.break_sound) bottle.break_sound.muted = status;
+    });
+  }
+}
+
 function startGame() {
   gameStartSound.play();
   backgroundTheme.play();
@@ -21,6 +74,7 @@ function startGame() {
   document.getElementById("mobile-controls").classList.remove("d-none");
   initLevel();
   world = new World(canvas, keyboard);
+  if (isMuted) muteWorldSounds(true);
 }
 
 function showGameOverScreen() {
