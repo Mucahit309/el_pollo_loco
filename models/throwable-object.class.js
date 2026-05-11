@@ -17,6 +17,7 @@ class ThrowableObject extends MovableObject {
 
   isSplashed = false;
   splashIndex = 0;
+  break_sound = new Audio('sounds/throwable/bottleBreak.mp3');
 
   constructor(x, y) {
     super();
@@ -45,6 +46,7 @@ class ThrowableObject extends MovableObject {
   splash() {
     this.isSplashed = true;
     this.speedY = 0;
+    this.break_sound.play();
   }
 
   animate() {

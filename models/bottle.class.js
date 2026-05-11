@@ -1,6 +1,7 @@
 class Bottle extends MovableObject {
     width = 60;
     height = 80;
+    collect_sound = new Audio('sounds/collectibles/bottleCollectSound.wav');
 
     constructor(x, y) {
         super();

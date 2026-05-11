@@ -36,6 +36,9 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/5_dead/G26.png'
     ];
 
+    approach_sound = new Audio('sounds/endboss/endbossApproach.wav');
+    dead_sound = new Audio('sounds/chicken/chickenDead.mp3');
+
     constructor() {
         super();
         this.loadImage('img/4_enemie_boss_chicken/2_alert/G5.png');
@@ -51,6 +54,9 @@ class Endboss extends MovableObject {
     animate() {
         setInterval(() => {
             if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
+                if (!this.hadFirstContact) {
+                    this.approach_sound.play();
+                }
                 this.hadFirstContact = true;
             }
             
@@ -64,6 +70,7 @@ class Endboss extends MovableObject {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
                 if (!this.isDeadTriggered) {
+                    this.dead_sound.play();
                     this.isDeadTriggered = true;
                     setTimeout(() => {
                         showWinScreen();

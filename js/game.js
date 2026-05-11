@@ -2,6 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let uiManager;
+let gameStartSound = new Audio('sounds/game/gameStart.mp3');
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -10,6 +11,7 @@ function init() {
 }
 
 function startGame() {
+  gameStartSound.play();
   document.getElementById("start-screen").classList.add("d-none");
   document.getElementById("mobile-controls").classList.remove("d-none");
   initLevel();

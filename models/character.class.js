@@ -72,6 +72,11 @@ class Character extends MovableObject {
   ];
 
   world;
+  walking_sound = new Audio('sounds/character/characterRun.mp3');
+  jumping_sound = new Audio('sounds/character/characterJump.wav');
+  dead_sound = new Audio('sounds/character/characterDead.wav');
+  hurt_sound = new Audio('sounds/character/characterDamage.mp3');
+  snoring_sound = new Audio('sounds/character/characterSnoring.mp3');
 
   constructor() {
     super();
@@ -89,20 +94,32 @@ class Character extends MovableObject {
 
   resetIdleTimer() {
     this.lastMoveTime = new Date().getTime();
+    if (this.snoring_sound) {
+      this.snoring_sound.pause();
+    }
   }
 
   animate() {
     setInterval(() => {
+      this.walking_sound.pause();
+      
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.resetIdleTimer();
+        if (!this.isAboveGround()) {
+          this.walking_sound.play();
+        }
       } else if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
         this.resetIdleTimer();
+        if (!this.isAboveGround()) {
+          this.walking_sound.play();
+        }
       }
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
+        this.jumping_sound.play();
         this.resetIdleTimer();
       }
 
@@ -112,8 +129,10 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+        this.dead_sound.play();
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        this.hurt_sound.play();
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else {
@@ -123,6 +142,7 @@ class Character extends MovableObject {
           let timePassed = new Date().getTime() - this.lastMoveTime;
           if (timePassed >= 15000) {
             this.playAnimation(this.IMAGES_LONG_IDLE);
+            this.snoring_sound.play();
           } else {
             this.playAnimation(this.IMAGES_IDLE);
           }

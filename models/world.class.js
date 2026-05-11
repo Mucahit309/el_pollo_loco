@@ -59,6 +59,7 @@ class World {
     if (this.level.bottles) {
       this.level.bottles.forEach((bottle, index) => {
         if (this.character.isColliding(bottle)) {
+          bottle.collect_sound.play();
           if (!this.character.collectedBottles) {
             this.character.collectedBottles = 0;
           }
@@ -123,6 +124,7 @@ class World {
     if (this.level.coins) {
       this.level.coins.forEach((coin, index) => {
         if (this.character.isColliding(coin)) {
+          coin.collect_sound.play();
           if (!this.character.collectedCoins) {
             this.character.collectedCoins = 0;
           }

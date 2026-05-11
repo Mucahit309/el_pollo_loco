@@ -11,6 +11,7 @@ class Coin extends MovableObject {
     'img/8_coin/coin_1.png',
     'img/8_coin/coin_2.png'
   ];
+  collect_sound = new Audio('sounds/collectibles/collectSound.wav');
 
   constructor(x, y) {
     super();
