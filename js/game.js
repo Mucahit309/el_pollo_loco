@@ -3,15 +3,20 @@ let world;
 let keyboard = new Keyboard();
 let uiManager;
 let gameStartSound = new Audio('sounds/game/gameStart.mp3');
+let backgroundTheme = new Audio('sounds/game/backgoundtheme.wav');
 
 function init() {
   canvas = document.getElementById("canvas");
   uiManager = new UIManager();
   bindTouchEvents();
+  backgroundTheme.loop = true;
+  backgroundTheme.volume = 0.2;
+  backgroundTheme.play().catch(() => {});
 }
 
 function startGame() {
   gameStartSound.play();
+  backgroundTheme.play();
   document.getElementById("start-screen").classList.add("d-none");
   document.getElementById("mobile-controls").classList.remove("d-none");
   initLevel();
@@ -22,6 +27,7 @@ function showGameOverScreen() {
   document.getElementById("game-over-screen").classList.remove("d-none");
   document.getElementById("game-over-screen").style.display = "flex";
   document.getElementById("mobile-controls").classList.add("d-none");
+  backgroundTheme.pause();
   clearAllIntervals();
 }
 
@@ -29,6 +35,7 @@ function showWinScreen() {
   document.getElementById("win-screen").classList.remove("d-none");
   document.getElementById("win-screen").style.display = "flex";
   document.getElementById("mobile-controls").classList.add("d-none");
+  backgroundTheme.pause();
   clearAllIntervals();
 }
 
@@ -44,6 +51,7 @@ function restartGame() {
   document.getElementById("win-screen").classList.add("d-none");
   document.getElementById("win-screen").style.display = "none";
   document.getElementById("mobile-controls").classList.remove("d-none");
+  backgroundTheme.currentTime = 0;
   startGame();
 }
 
