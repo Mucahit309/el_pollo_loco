@@ -1,4 +1,11 @@
 class SmallChicken extends MovableObject {
+  offset = {
+    top: -10,
+    left: -10,
+    right: -10,
+    bottom: -10
+  };
+
   height = 40;
   width = 40;
   y = 385;
@@ -14,7 +21,7 @@ class SmallChicken extends MovableObject {
     this.loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
 
-    this.x = 250 + Math.random() * 2000;
+    this.x = 250 + Math.random() * 3000;
     this.speed = 0.05 + Math.random() * 0.15;
 
     this.energy = 25;

@@ -34,24 +34,31 @@ class World {
     }, 200);
   }
 
-  checkCollisions() {
+checkCollisions() {
+    let stompedEnemy = false;
+
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy) && !enemy.isDead()) {
         if (this.character.isAboveGround() && this.character.speedY < 0 && !(enemy instanceof Endboss)) {
           enemy.hit(100);
-          this.character.jump();
+          stompedEnemy = true;
+          
           setTimeout(() => {
             let enemyIndex = this.level.enemies.indexOf(enemy);
             if (enemyIndex > -1) {
               this.level.enemies.splice(enemyIndex, 1);
             }
           }, 2000);
-        } else if (!this.character.isHurt()) {
+        } else if (!this.character.isHurt() && !stompedEnemy) {
           this.character.hit(20);
           this.statusBar.setPercentage(this.character.energy);
         }
       }
     });
+
+    if (stompedEnemy) {
+      this.character.jump();
+    }
   }
 
   checkBottleCollisions() {

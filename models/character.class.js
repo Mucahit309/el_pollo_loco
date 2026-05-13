@@ -1,11 +1,11 @@
 class Character extends MovableObject {
   offset = {
     top: 120,
-    left: 40,
-    right: 40,
-    bottom: 30
+    left: 30,
+    right: 30,
+    bottom: 10
   };
-  
+
   height = 300;
   width = 150;
   y = 135;
@@ -72,11 +72,11 @@ class Character extends MovableObject {
   ];
 
   world;
-  walking_sound = new Audio('sounds/character/characterRun.mp3');
-  jumping_sound = new Audio('sounds/character/characterJump.wav');
-  dead_sound = new Audio('sounds/character/characterDead.wav');
-  hurt_sound = new Audio('sounds/character/characterDamage.mp3');
-  snoring_sound = new Audio('sounds/character/characterSnoring.mp3');
+  walking_sound = new Audio("sounds/character/characterRun.mp3");
+  jumping_sound = new Audio("sounds/character/characterJump.wav");
+  dead_sound = new Audio("sounds/character/characterDead.wav");
+  hurt_sound = new Audio("sounds/character/characterDamage.mp3");
+  snoring_sound = new Audio("sounds/character/characterSnoring.mp3");
 
   constructor() {
     super();
@@ -102,7 +102,7 @@ class Character extends MovableObject {
   animate() {
     setInterval(() => {
       this.walking_sound.pause();
-      
+
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.resetIdleTimer();
