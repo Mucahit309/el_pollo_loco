@@ -293,7 +293,9 @@ canvas {
   }
   
   #mute-btn {
-    display: none !important;
+    right: 15px;
+    top: 15px;
+    z-index: 60;
   }
 
   #btn-controls {
