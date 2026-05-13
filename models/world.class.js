@@ -39,7 +39,6 @@ class World {
         if (this.character.isAboveGround() && this.character.speedY < 0) {
           enemy.hit(100);
           this.character.jump();
-
           setTimeout(() => {
             let enemyIndex = this.level.enemies.indexOf(enemy);
             if (enemyIndex > -1) {
@@ -52,13 +51,13 @@ class World {
         }
       }
     });
-    this.checkBottleCollisions();
   }
 
   checkBottleCollisions() {
     if (this.level.bottles) {
       this.level.bottles.forEach((bottle, index) => {
         if (this.character.isColliding(bottle)) {
+          bottle.collect_sound.muted = isMuted;
           bottle.collect_sound.play();
           if (!this.character.collectedBottles) {
             this.character.collectedBottles = 0;
@@ -76,9 +75,9 @@ class World {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
         if (bottle.isColliding(enemy) && !enemy.isDead() && !bottle.isSplashed) {
+          bottle.break_sound.muted = isMuted;
           bottle.splash();
           enemy.hit(bottle.damage);
-          
           setTimeout(() => {
             let index = this.throwableObjects.indexOf(bottle);
             if (index > -1) {
@@ -102,10 +101,8 @@ class World {
         this.character.y + 100,
       );
       this.throwableObjects.push(bottle);
-
       this.character.collectedBottles -= 20;
       this.statusBarBottles.setPercentage(this.character.collectedBottles);
-
       setTimeout(() => {
         this.isThrowing = false;
       }, 800);
@@ -124,6 +121,7 @@ class World {
     if (this.level.coins) {
       this.level.coins.forEach((coin, index) => {
         if (this.character.isColliding(coin)) {
+          coin.collect_sound.muted = isMuted;
           coin.collect_sound.play();
           if (!this.character.collectedCoins) {
             this.character.collectedCoins = 0;
@@ -141,26 +139,20 @@ class World {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.ctx.translate(this.camera_x, 0);
     this.addObjectToMap(this.level.backgroundObjects);
-
     this.ctx.translate(-this.camera_x, 0);
-
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarBottles);
     this.addToMap(this.coinBar);
     this.ctx.translate(this.camera_x, 0);
-
     this.addToMap(this.character);
     this.addObjectToMap(this.level.enemies);
     this.addObjectToMap(this.level.clouds);
     this.addObjectToMap(this.throwableObjects);
     this.addObjectToMap(this.level.bottles);
     this.addObjectToMap(this.level.coins);
-
     this.ctx.translate(-this.camera_x, 0);
-
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
@@ -179,10 +171,8 @@ class World {
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-
     mo.draw(this.ctx);
     mo.drawFrame(this.ctx);
-
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }

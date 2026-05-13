@@ -4,7 +4,7 @@ let keyboard = new Keyboard();
 let uiManager;
 let gameStartSound = new Audio('sounds/game/gameStart.mp3');
 let backgroundTheme = new Audio('sounds/game/backgoundtheme.wav');
-let isMuted = false;
+let isMuted = localStorage.getItem('muted') === 'true';
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -12,23 +12,25 @@ function init() {
   bindTouchEvents();
   backgroundTheme.loop = true;
   backgroundTheme.volume = 0.2;
+  backgroundTheme.muted = isMuted;
+  gameStartSound.muted = isMuted;
+  updateMuteButton();
   backgroundTheme.play().catch(() => {});
 }
 
 function toggleMute() {
   isMuted = !isMuted;
+  localStorage.setItem('muted', isMuted);
+  updateMuteButton();
+  backgroundTheme.muted = isMuted;
+  gameStartSound.muted = isMuted;
+  if (world) muteWorldSounds(isMuted);
+}
+
+function updateMuteButton() {
   let btn = document.getElementById('mute-btn');
-  
-  if (isMuted) {
-    btn.innerHTML = 'Unmute';
-    backgroundTheme.muted = true;
-    gameStartSound.muted = true;
-    if(world) muteWorldSounds(true);
-  } else {
-    btn.innerHTML = 'Mute';
-    backgroundTheme.muted = false;
-    gameStartSound.muted = false;
-    if(world) muteWorldSounds(false);
+  if (btn) {
+    btn.innerHTML = isMuted ? 'Unmute' : 'Mute';
   }
 }
 
@@ -74,7 +76,7 @@ function startGame() {
   document.getElementById("mobile-controls").classList.remove("d-none");
   initLevel();
   world = new World(canvas, keyboard);
-  if (isMuted) muteWorldSounds(true);
+  muteWorldSounds(isMuted);
 }
 
 function showGameOverScreen() {
@@ -115,7 +117,6 @@ function mainMenu() {
 
 function toggleFullscreen() {
   let container = document.getElementById("fullscreen-container");
-
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     if (container.requestFullscreen) {
       container.requestFullscreen();
@@ -144,7 +145,6 @@ function bindTouchEvents() {
     e.preventDefault();
     keyboard.LEFT = false;
   });
-
   document.getElementById('btn-right').addEventListener('touchstart', (e) => {
     e.preventDefault();
     keyboard.RIGHT = true;
@@ -153,7 +153,6 @@ function bindTouchEvents() {
     e.preventDefault();
     keyboard.RIGHT = false;
   });
-
   document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
     e.preventDefault();
     keyboard.SPACE = true;
@@ -162,7 +161,6 @@ function bindTouchEvents() {
     e.preventDefault();
     keyboard.SPACE = false;
   });
-
   document.getElementById('btn-throw').addEventListener('touchstart', (e) => {
     e.preventDefault();
     keyboard.D = true;
