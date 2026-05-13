@@ -6,9 +6,10 @@ class World {
   keyboard;
   camera_x = 0;
   statusBar = new StatusBar();
-  throwableObjects = [];
   statusBarBottles = new StatusBarBottle();
   coinBar = new CoinBar();
+  statusBarEndboss = new StatusBarEndboss();
+  throwableObjects = [];
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -36,7 +37,7 @@ class World {
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy) && !enemy.isDead()) {
-        if (this.character.isAboveGround() && this.character.speedY < 0) {
+        if (this.character.isAboveGround() && this.character.speedY < 0 && !(enemy instanceof Endboss)) {
           enemy.hit(100);
           this.character.jump();
           setTimeout(() => {
@@ -78,6 +79,11 @@ class World {
           bottle.break_sound.muted = isMuted;
           bottle.splash();
           enemy.hit(bottle.damage);
+          
+          if (enemy instanceof Endboss) {
+            this.statusBarEndboss.setPercentage(enemy.energy);
+          }
+
           setTimeout(() => {
             let index = this.throwableObjects.indexOf(bottle);
             if (index > -1) {
@@ -90,16 +96,9 @@ class World {
   }
 
   checkThrowObjects() {
-    if (
-      this.keyboard.D &&
-      this.character.collectedBottles > 0 &&
-      !this.isThrowing
-    ) {
+    if (this.keyboard.D && this.character.collectedBottles > 0 && !this.isThrowing) {
       this.isThrowing = true;
-      let bottle = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 100,
-      );
+      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
       this.throwableObjects.push(bottle);
       this.character.collectedBottles -= 20;
       this.statusBarBottles.setPercentage(this.character.collectedBottles);
@@ -142,9 +141,16 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectToMap(this.level.backgroundObjects);
     this.ctx.translate(-this.camera_x, 0);
+    
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarBottles);
     this.addToMap(this.coinBar);
+    
+    let endboss = this.level.enemies.find(e => e instanceof Endboss);
+    if (endboss && endboss.hadFirstContact) {
+        this.addToMap(this.statusBarEndboss);
+    }
+
     this.ctx.translate(this.camera_x, 0);
     this.addToMap(this.character);
     this.addObjectToMap(this.level.enemies);
@@ -153,6 +159,7 @@ class World {
     this.addObjectToMap(this.level.bottles);
     this.addObjectToMap(this.level.coins);
     this.ctx.translate(-this.camera_x, 0);
+
     let self = this;
     requestAnimationFrame(function () {
       self.draw();

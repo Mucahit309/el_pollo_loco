@@ -34,7 +34,7 @@ class ThrowableObject extends MovableObject {
   }
 
   throw() {
-    this.speedY = 15;
+    this.speedY = 7;
     this.applyGravity();
     this.movementInterval = setInterval(() => {
       if (!this.isSplashed) {
