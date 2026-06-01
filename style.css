@@ -167,7 +167,10 @@ canvas {
   background-size: cover;
   background-position: right center;
   justify-content: flex-end;
-  padding-bottom: 10px;
+}
+
+#start-screen .button-container {
+  margin-bottom: 10px;
 }
 
 #controls-screen {
@@ -328,6 +331,10 @@ canvas {
   transform: scale(1.00);
 }
 
+.mobile-imprint-btn {
+  display: none;
+}
+
 @media (max-width: 1366px) and (hover: none) and (pointer: coarse) {
   body {
     padding: 0;
@@ -413,6 +420,35 @@ canvas {
   .movement-controls, .action-controls {
     display: flex;
     gap: 20px;
+  }
+
+  .mobile-imprint-btn {
+    display: block;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    color: #8b4513;
+    font-size: 14px;
+    text-decoration: none;
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", fantasy;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 2px solid #ff9800;
+    z-index: 60;
+  }
+
+  .footer-links {
+    display: none !important;
+  }
+
+  body.impressum-page {
+    overflow-y: auto !important;
+    height: auto !important;
+    display: flex;
+    padding-bottom: 40px;
   }
 }
 
