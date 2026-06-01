@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/game.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/game.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let canvas;
+let world;
+let keyboard = new Keyboard();
+let uiManager;
+let gameStartSound = new Audio('sounds/game/gameStart.mp3');
+let backgroundTheme = new Audio('sounds/game/backgoundtheme.wav');
+let isMuted = localStorage.getItem('muted') === 'true';
+
+/**
+ * Initializes the basic setup when the page loads.
+ * Sets up touch events for mobile controls.
+ */
+function init() {
+  canvas = document.getElementById("canvas");
+  uiManager = new UIManager();
+  bindTouchEvents();
+  backgroundTheme.loop = true;
+  backgroundTheme.volume = 0.2;
+  backgroundTheme.muted = isMuted;
+  gameStartSound.muted = isMuted;
+  updateMuteButton();
+  backgroundTheme.play().catch(() => {});
+}
+
+/**
+ * Toggles the global mute state for all game sounds and updates local storage.
+ */
+function toggleMute() {
+  isMuted = !isMuted;
+  localStorage.setItem('muted', isMuted);
+  updateMuteButton();
+  backgroundTheme.muted = isMuted;
+  gameStartSound.muted = isMuted;
+  if (world) muteWorldSounds(isMuted);
+}
+
+function updateMuteButton() {
+  let btn = document.getElementById('mute-btn');
+  if (btn) {
+    btn.innerHTML = isMuted ? 'Unmute' : 'Mute';
+  }
+}
+
+/**
+ * Mutes or unmutes all specific audio elements in the world.
+ * @param {boolean} status - True to mute, false to unmute.
+ */
+function muteWorldSounds(status) {
+  if (!world) return;
+  muteCharacterSounds(status);
+  muteEnemySounds(status);
+  muteCollectibleSounds(status);
+  muteThrowableSounds(status);
+}
+
+function muteCharacterSounds(status) {
+  if (!world.character) return;
+  let c = world.character;
+  if (c.walking_sound) c.walking_sound.muted = status;
+  if (c.jumping_sound) c.jumping_sound.muted = status;
+  if (c.dead_sound) c.dead_sound.muted = status;
+  if (c.hurt_sound) c.hurt_sound.muted = status;
+  if (c.snoring_sound) c.snoring_sound.muted = status;
+}
+
+function muteEnemySounds(status) {
+  if (!world.level || !world.level.enemies) return;
+  world.level.enemies.forEach(enemy => {
+    if (enemy.dead_sound) enemy.dead_sound.muted = status;
+    if (enemy.approach_sound) enemy.approach_sound.muted = status;
+  });
+}
+
+function muteCollectibleSounds(status) {
+  if (!world.level) return;
+  if (world.level.coins) {
+    world.level.coins.forEach(c => { if (c.collect_sound) c.collect_sound.muted = status; });
+  }
+  if (world.level.bottles) {
+    world.level.bottles.forEach(b => { if (b.collect_sound) b.collect_sound.muted = status; });
+  }
+}
+
+function muteThrowableSounds(status) {
+  if (!world.throwableObjects) return;
+  world.throwableObjects.forEach(bottle => {
+    if (bottle.break_sound) bottle.break_sound.muted = status;
+  });
+}
+
+/**
+ * Starts the game, initializes the level, creates a new world, and hides the start screen.
+ */
+function startGame() {
+  gameStartSound.play();
+  backgroundTheme.play();
+  document.getElementById("start-screen").classList.add("d-none");
+  document.getElementById("mobile-controls").classList.remove("d-none");
+  initLevel();
+  world = new World(canvas, keyboard);
+  muteWorldSounds(isMuted);
+}
+
+function showGameOverScreen() {
+  document.getElementById("game-over-screen").classList.remove("d-none");
+  document.getElementById("game-over-screen").style.display = "flex";
+  document.getElementById("mobile-controls").classList.add("d-none");
+  backgroundTheme.pause();
+  clearAllIntervals();
+}
+
+function showWinScreen() {
+  document.getElementById("win-screen").classList.remove("d-none");
+  document.getElementById("win-screen").style.display = "flex";
+  document.getElementById("mobile-controls").classList.add("d-none");
+  backgroundTheme.pause();
+  clearAllIntervals();
+}
+
+/**
+ * Clears all intervals to stop the game loop completely.
+ */
+function clearAllIntervals() {
+  for (let i = 1; i &lt; 9999; i++) {
+    window.clearInterval(i);
+  }
+}
+
+/**
+ * Restarts the game after game over or win screen by resetting the canvas and world.
+ */
+function restartGame() {
+  document.getElementById("game-over-screen").classList.add("d-none");
+  document.getElementById("game-over-screen").style.display = "none";
+  document.getElementById("win-screen").classList.add("d-none");
+  document.getElementById("win-screen").style.display = "none";
+  document.getElementById("mobile-controls").classList.remove("d-none");
+  backgroundTheme.currentTime = 0;
+  startGame();
+}
+
+/**
+ * Returns to the main menu and stops all running game intervals.
+ */
+function mainMenu() {
+  window.location.reload();
+}
+
+/**
+ * Toggles fullscreen mode for the game container.
+ */
+function toggleFullscreen() {
+  let container = document.getElementById("fullscreen-container");
+  if (!document.fullscreenElement &amp;&amp; !document.webkitFullscreenElement) {
+    if (container.requestFullscreen) {
+      container.requestFullscreen();
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) {
+      container.msRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }
+}
+
+function bindTouchEvents() {
+  document.getElementById('btn-left').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    keyboard.LEFT = true;
+  });
+  document.getElementById('btn-left').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    keyboard.LEFT = false;
+  });
+  document.getElementById('btn-right').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    keyboard.RIGHT = true;
+  });
+  document.getElementById('btn-right').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    keyboard.RIGHT = false;
+  });
+  document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    keyboard.SPACE = true;
+  });
+  document.getElementById('btn-jump').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    keyboard.SPACE = false;
+  });
+  document.getElementById('btn-throw').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    keyboard.D = true;
+  });
+  document.getElementById('btn-throw').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    keyboard.D = false;
+  });
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.key == "ArrowLeft") keyboard.LEFT = true;
+  if (e.key == "ArrowRight") keyboard.RIGHT = true;
+  if (e.key == "ArrowUp") keyboard.UP = true;
+  if (e.key == "ArrowDown") keyboard.DOWN = true;
+  if (e.key == " ") keyboard.SPACE = true;
+  if (e.key == "d" || e.key == "D") keyboard.D = true;
+});
+
+window.addEventListener("keyup", (e) => {
+  if (e.key == "ArrowLeft") keyboard.LEFT = false;
+  if (e.key == "ArrowRight") keyboard.RIGHT = false;
+  if (e.key == "ArrowUp") keyboard.UP = false;
+  if (e.key == "ArrowDown") keyboard.DOWN = false;
+  if (e.key == " ") keyboard.SPACE = false;
+  if (e.key == "d" || e.key == "D") keyboard.D = false;
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#mainMenu">mainMenu</a></li><li><a href="global.html#muteWorldSounds">muteWorldSounds</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Jun 01 2026 06:17:25 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
