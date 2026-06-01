@@ -1,3 +1,6 @@
+/**
+ * Represents the game world, orchestrating the level, character, enemies, and UI.
+ */
 class World {
   character = new Character();
   level = level1;
@@ -11,6 +14,11 @@ class World {
   statusBarEndboss = new StatusBarEndboss();
   throwableObjects = [];
 
+  /**
+   * Creates the game world.
+   * @param {HTMLCanvasElement} canvas - The canvas element to draw the game on.
+   * @param {Keyboard} keyboard - The keyboard handler for user input.
+   */
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
@@ -20,10 +28,16 @@ class World {
     this.run();
   }
 
+  /**
+   * Links the world instance to the main character.
+   */
   setWorld() {
     this.character.world = this;
   }
 
+  /**
+   * Starts the game loop checking for collisions and throwables.
+   */
   run() {
     setInterval(() => {
       this.checkCollisions();
@@ -34,7 +48,10 @@ class World {
     }, 200);
   }
 
-checkCollisions() {
+  /**
+   * Checks for all collisions between the character, enemies, and items.
+   */
+  checkCollisions() {
     let stompedEnemy = false;
     this.level.enemies.forEach((enemy) => {
       if (this.isEnemyColliding(enemy)) {
@@ -82,7 +99,7 @@ checkCollisions() {
   }
 
 
-checkBottleCollisions() {
+  checkBottleCollisions() {
     this.checkBottleCollection();
     this.checkThrowableCollisions();
   }
@@ -133,6 +150,9 @@ checkBottleCollisions() {
     }, 400);
   }
 
+  /**
+   * Checks if the user threw a bottle and instantiates a throwable object.
+   */
   checkThrowObjects() {
     if (this.keyboard.D && this.character.collectedBottles > 0 && !this.isThrowing) {
       this.isThrowing = true;
@@ -174,7 +194,10 @@ checkBottleCollisions() {
     }
   }
 
-draw() {
+  /**
+   * Clears the canvas and recursively draws the background, objects, and UI onto the canvas.
+   */
+  draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawBackground();
     this.drawStatusBars();
@@ -212,6 +235,10 @@ draw() {
     this.ctx.translate(-this.camera_x, 0);
   }
 
+  /**
+   * Adds an array of objects to the map to be drawn.
+   * @param {DrawableObject[]} objects - Array of objects to draw.
+   */
   addObjectToMap(objects) {
     if (objects) {
       objects.forEach((o) => {

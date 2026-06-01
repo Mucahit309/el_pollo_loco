@@ -6,6 +6,10 @@ let gameStartSound = new Audio('sounds/game/gameStart.mp3');
 let backgroundTheme = new Audio('sounds/game/backgoundtheme.wav');
 let isMuted = localStorage.getItem('muted') === 'true';
 
+/**
+ * Initializes the basic setup when the page loads.
+ * Sets up touch events for mobile controls.
+ */
 function init() {
   canvas = document.getElementById("canvas");
   uiManager = new UIManager();
@@ -18,6 +22,9 @@ function init() {
   backgroundTheme.play().catch(() => {});
 }
 
+/**
+ * Toggles the global mute state for all game sounds and updates local storage.
+ */
 function toggleMute() {
   isMuted = !isMuted;
   localStorage.setItem('muted', isMuted);
@@ -34,6 +41,10 @@ function updateMuteButton() {
   }
 }
 
+/**
+ * Mutes or unmutes all specific audio elements in the world.
+ * @param {boolean} status - True to mute, false to unmute.
+ */
 function muteWorldSounds(status) {
   if (!world) return;
   muteCharacterSounds(status);
@@ -77,6 +88,9 @@ function muteThrowableSounds(status) {
   });
 }
 
+/**
+ * Starts the game, initializes the level, creates a new world, and hides the start screen.
+ */
 function startGame() {
   gameStartSound.play();
   backgroundTheme.play();
@@ -103,12 +117,18 @@ function showWinScreen() {
   clearAllIntervals();
 }
 
+/**
+ * Clears all intervals to stop the game loop completely.
+ */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) {
     window.clearInterval(i);
   }
 }
 
+/**
+ * Restarts the game after game over or win screen by resetting the canvas and world.
+ */
 function restartGame() {
   document.getElementById("game-over-screen").classList.add("d-none");
   document.getElementById("game-over-screen").style.display = "none";
@@ -119,10 +139,16 @@ function restartGame() {
   startGame();
 }
 
+/**
+ * Returns to the main menu and stops all running game intervals.
+ */
 function mainMenu() {
   window.location.reload();
 }
 
+/**
+ * Toggles fullscreen mode for the game container.
+ */
 function toggleFullscreen() {
   let container = document.getElementById("fullscreen-container");
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {

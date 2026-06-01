@@ -1,3 +1,6 @@
+/**
+ * Represents a basic drawable object on the canvas.
+ */
 class DrawableObject {
   img;
   imageCache = {};
@@ -7,12 +10,20 @@ class DrawableObject {
   height = 150;
   width = 100;
 
+  /**
+   * Loads a single image from a given path.
+   * @param {string} path - The relative path to the image file.
+   */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
-    drawFrame(ctx) {
+  /**
+   * Draws a frame around the object for debugging collision detection.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   */
+  drawFrame(ctx) {
     if (
       this instanceof Character ||
       this instanceof Chicken ||
@@ -23,10 +34,18 @@ class DrawableObject {
     }
   }
 
+  /**
+   * Draws the object onto the canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   */
   draw(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
+  /**
+   * Loads multiple images into the image cache for animations.
+   * @param {string[]} arr - An array of image paths.
+   */
   loadImages(arr) {
     arr.forEach((path) => {
       let img = new Image();

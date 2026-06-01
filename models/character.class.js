@@ -1,3 +1,7 @@
+/**
+ * Represents the main playable character (Pepe).
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
   offset = {
     top: 120,
@@ -99,11 +103,17 @@ class Character extends MovableObject {
     }
   }
 
-animate() {
+  /**
+   * Starts the animation and movement loops for the character.
+   */
+  animate() {
     setInterval(() => this.handleMovement(), 1000 / 60);
     setInterval(() => this.handleAnimation(), 1000 / 10);
   }
 
+  /**
+   * Handles keyboard inputs to move the character horizontally and jump.
+   */
   handleMovement() {
     this.walking_sound.pause();
     this.checkHorizontalMove();
@@ -111,6 +121,9 @@ animate() {
     this.world.camera_x = -this.x + 100;
   }
 
+  /**
+   * Checks if the character should move left or right based on input.
+   */
   checkHorizontalMove() {
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
       this.moveCharacterRight();
@@ -143,6 +156,9 @@ animate() {
     }
   }
 
+  /**
+   * Handles the visual animations depending on the character's state (dead, hurt, jumping, walking).
+   */
   handleAnimation() {
     if (this.isDead()) {
       this.playAnimation(this.IMAGES_DEAD);

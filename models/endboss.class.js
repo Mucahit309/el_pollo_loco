@@ -1,3 +1,7 @@
+/**
+ * Represents the Endboss enemy at the end of the level.
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
     y = 100;
     height = 350;
@@ -51,7 +55,10 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-animate() {
+  /**
+   * Starts the Endboss logic, handling movement and animation loops.
+   */
+  animate() {
     setInterval(() => this.handleMovement(), 300 / 60);
     setInterval(() => this.handleAnimation(), 200);
   }
@@ -64,6 +71,9 @@ animate() {
     }
   }
 
+  /**
+   * Checks if the main character is close enough to trigger the boss fight.
+   */
   checkFirstContact() {
     if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
       if (!this.hadFirstContact) {

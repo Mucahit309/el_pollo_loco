@@ -1,3 +1,7 @@
+/**
+ * Represents an object (bottle) that can be thrown by the character.
+ * @extends MovableObject
+ */
 class ThrowableObject extends MovableObject {
   IMAGES_ROTATION = [
     "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
@@ -19,6 +23,11 @@ class ThrowableObject extends MovableObject {
   splashIndex = 0;
   break_sound = new Audio('sounds/throwable/bottleBreak.mp3');
 
+  /**
+   * Creates a throwable object at a specific position.
+   * @param {number} x - The x-coordinate to spawn the object.
+   * @param {number} y - The y-coordinate to spawn the object.
+   */
   constructor(x, y) {
     super();
     this.loadImage("img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png");
@@ -33,6 +42,9 @@ class ThrowableObject extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Handles the flying trajectory of the bottle.
+   */
   throw() {
     this.speedY = 7;
     this.applyGravity();
@@ -43,6 +55,9 @@ class ThrowableObject extends MovableObject {
     }, 25);
   }
 
+  /**
+   * Stops the bottle from moving and triggers the splash animation.
+   */
   splash() {
     this.isSplashed = true;
     this.speedY = 0;
