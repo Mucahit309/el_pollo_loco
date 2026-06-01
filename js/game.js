@@ -35,38 +35,46 @@ function updateMuteButton() {
 }
 
 function muteWorldSounds(status) {
-  if (world && world.character) {
-    if (world.character.walking_sound) world.character.walking_sound.muted = status;
-    if (world.character.jumping_sound) world.character.jumping_sound.muted = status;
-    if (world.character.dead_sound) world.character.dead_sound.muted = status;
-    if (world.character.hurt_sound) world.character.hurt_sound.muted = status;
-    if (world.character.snoring_sound) world.character.snoring_sound.muted = status;
-  }
-  
-  if (world && world.level) {
-    if (world.level.enemies) {
-      world.level.enemies.forEach(enemy => {
-        if(enemy.dead_sound) enemy.dead_sound.muted = status;
-        if(enemy.approach_sound) enemy.approach_sound.muted = status;
-      });
-    }
-    if (world.level.coins) {
-      world.level.coins.forEach(coin => {
-        if(coin.collect_sound) coin.collect_sound.muted = status;
-      });
-    }
-    if (world.level.bottles) {
-      world.level.bottles.forEach(bottle => {
-        if(bottle.collect_sound) bottle.collect_sound.muted = status;
-      });
-    }
-  }
+  if (!world) return;
+  muteCharacterSounds(status);
+  muteEnemySounds(status);
+  muteCollectibleSounds(status);
+  muteThrowableSounds(status);
+}
 
-  if (world && world.throwableObjects) {
-    world.throwableObjects.forEach(bottle => {
-      if(bottle.break_sound) bottle.break_sound.muted = status;
-    });
+function muteCharacterSounds(status) {
+  if (!world.character) return;
+  let c = world.character;
+  if (c.walking_sound) c.walking_sound.muted = status;
+  if (c.jumping_sound) c.jumping_sound.muted = status;
+  if (c.dead_sound) c.dead_sound.muted = status;
+  if (c.hurt_sound) c.hurt_sound.muted = status;
+  if (c.snoring_sound) c.snoring_sound.muted = status;
+}
+
+function muteEnemySounds(status) {
+  if (!world.level || !world.level.enemies) return;
+  world.level.enemies.forEach(enemy => {
+    if (enemy.dead_sound) enemy.dead_sound.muted = status;
+    if (enemy.approach_sound) enemy.approach_sound.muted = status;
+  });
+}
+
+function muteCollectibleSounds(status) {
+  if (!world.level) return;
+  if (world.level.coins) {
+    world.level.coins.forEach(c => { if (c.collect_sound) c.collect_sound.muted = status; });
   }
+  if (world.level.bottles) {
+    world.level.bottles.forEach(b => { if (b.collect_sound) b.collect_sound.muted = status; });
+  }
+}
+
+function muteThrowableSounds(status) {
+  if (!world.throwableObjects) return;
+  world.throwableObjects.forEach(bottle => {
+    if (bottle.break_sound) bottle.break_sound.muted = status;
+  });
 }
 
 function startGame() {

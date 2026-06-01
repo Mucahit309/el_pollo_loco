@@ -51,38 +51,46 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-    animate() {
-        setInterval(() => {
-            if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
-                if (!this.hadFirstContact) {
-                    this.approach_sound.play();
-                }
-                this.hadFirstContact = true;
-            }
-            
-            if (this.hadFirstContact && !this.isDead()) {
-                this.moveLeft();
-                this.otherDirection = false;
-            }
-        }, 300 / 60);
+animate() {
+    setInterval(() => this.handleMovement(), 300 / 60);
+    setInterval(() => this.handleAnimation(), 200);
+  }
 
-        setInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-                if (!this.isDeadTriggered) {
-                    this.dead_sound.play();
-                    this.isDeadTriggered = true;
-                    setTimeout(() => {
-                        showWinScreen();
-                    }, 1000);
-                }
-            } else if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.hadFirstContact) {
-                this.playAnimation(this.IMAGES_WALKING);
-            } else {
-                this.playAnimation(this.IMAGES_ALERT); 
-            }
-        }, 200);
+  handleMovement() {
+    this.checkFirstContact();
+    if (this.hadFirstContact && !this.isDead()) {
+      this.moveLeft();
+      this.otherDirection = false;
     }
+  }
+
+  checkFirstContact() {
+    if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
+      if (!this.hadFirstContact) {
+        this.approach_sound.play();
+      }
+      this.hadFirstContact = true;
+    }
+  }
+
+  handleAnimation() {
+    if (this.isDead()) {
+      this.handleDead();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.hadFirstContact) {
+      this.playAnimation(this.IMAGES_WALKING);
+    } else {
+      this.playAnimation(this.IMAGES_ALERT); 
+    }
+  }
+
+  handleDead() {
+    this.playAnimation(this.IMAGES_DEAD);
+    if (!this.isDeadTriggered) {
+      this.dead_sound.play();
+      this.isDeadTriggered = true;
+      setTimeout(() => showWinScreen(), 1000);
+    }
+  }
 }

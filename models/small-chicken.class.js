@@ -1,9 +1,9 @@
 class SmallChicken extends MovableObject {
   offset = {
-    top: -10,
-    left: -10,
-    right: -10,
-    bottom: -10
+    top: -15,
+    left: -15,
+    right: -15,
+    bottom: -15
   };
 
   height = 40;
