@@ -272,6 +272,62 @@ canvas {
   display: none;
 }
 
+.impressum-box {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 40px;
+  border-radius: 15px;
+  max-width: 600px;
+  text-align: center;
+  border: 3px solid #ff9800;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8);
+  margin-top: 20px;
+}
+
+.impressum-box h2 {
+  color: #ff9800;
+  margin-bottom: 10px;
+}
+
+.impressum-box p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-top: 40px;
+  text-decoration: none;
+}
+
+.footer-links {
+  margin-top: 25px;
+  z-index: 10;
+}
+
+.footer-links a {
+  color: #8b4513;
+  font-size: 22px;
+  text-decoration: none;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", fantasy;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 2px solid #ff9800;
+  transition: all 0.1s ease-in-out;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.footer-links a:hover {
+  background-color: #ff9800;
+  color: white;
+  transform: scale(1.00);
+}
+
 @media (max-width: 1366px) and (hover: none) and (pointer: coarse) {
   body {
     padding: 0;
