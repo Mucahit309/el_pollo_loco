@@ -19,6 +19,7 @@ class UIManager {
 
   /**
    * Binds click events to the UI buttons for starting the game and showing controls.
+   * @returns {void}
    */
   bindEvents() {
     this.btnStart.onclick = () => this.handleStartGame();
@@ -28,6 +29,7 @@ class UIManager {
 
   /**
    * Handles the start game action by hiding the start screen and calling startGame().
+   * @returns {void}
    */
   handleStartGame() {
     this.startScreen.classList.add("hidden");
@@ -37,6 +39,7 @@ class UIManager {
 
   /**
    * Hides the start screen and displays the controls screen.
+   * @returns {void}
    */
   showControls() {
     this.startScreen.classList.add("hidden");
@@ -47,6 +50,7 @@ class UIManager {
 
   /**
    * Hides the controls screen and returns to the start screen.
+   * @returns {void}
    */
   hideControls() {
     this.controlsScreen.classList.add("hidden");

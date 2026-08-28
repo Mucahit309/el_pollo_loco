@@ -1,3 +1,7 @@
+/**
+ * Represents the status bar for tracking and displaying the health of the Endboss on the user interface.
+ * @extends DrawableObject
+ */
 class StatusBarEndboss extends DrawableObject {
   IMAGES = [
     'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
@@ -10,6 +14,10 @@ class StatusBarEndboss extends DrawableObject {
 
   percentage = 100;
 
+  /**
+   * Initializes a new instance of the StatusBarEndboss class, loads status bar images, 
+   * sets screen coordinates, dimensions, and initializes the percentage to 100.
+   */
   constructor() {
     super();
     this.loadImages(this.IMAGES);
@@ -20,12 +28,21 @@ class StatusBarEndboss extends DrawableObject {
     this.setPercentage(100);
   }
 
+  /**
+   * Updates the current Endboss health percentage and changes the displayed image accordingly.
+   * @param {number} percentage - The current percentage value of the Endboss health (0 to 100).
+   * @returns {void}
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.IMAGES[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Determines the correct array index for the status bar image based on the current percentage.
+   * @returns {number} The index corresponding to the appropriate image level (0 to 5).
+   */
   resolveImageIndex() {
     if (this.percentage == 100) {
       return 5;

@@ -1,13 +1,13 @@
 /**
- * Represents the main playable character (Pepe).
+ * Represents the main playable character (Pepe) in the game.
  * @extends MovableObject
  */
 class Character extends MovableObject {
   offset = {
     top: 120,
-    left: 30,
-    right: 30,
-    bottom: 5
+    left: 40,
+    right: 40,
+    bottom: 15
   };
 
   height = 300;
@@ -16,6 +16,8 @@ class Character extends MovableObject {
   speed = 5;
   collectedBottles = 0;
   lastMoveTime = 0;
+  acceleration = 4;
+  currentJumpFrame = 0;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -82,6 +84,9 @@ class Character extends MovableObject {
   hurt_sound = new Audio("sounds/character/characterDamage.mp3");
   snoring_sound = new Audio("sounds/character/characterSnoring.mp3");
 
+  /**
+   * Initializes a new instance of the Character class, loads images, sets up gravity and animations.
+   */
   constructor() {
     super();
     this.loadImage("img/2_character_pepe/2_walk/W-21.png");
@@ -96,6 +101,10 @@ class Character extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Resets the idle timer to the current timestamp and pauses the snoring sound.
+   * @returns {void}
+   */
   resetIdleTimer() {
     this.lastMoveTime = new Date().getTime();
     if (this.snoring_sound) {
@@ -104,7 +113,8 @@ class Character extends MovableObject {
   }
 
   /**
-   * Starts the animation and movement loops for the character.
+   * Starts the intervals for handling character movement and animations.
+   * @returns {void}
    */
   animate() {
     setInterval(() => this.handleMovement(), 1000 / 60);
@@ -112,17 +122,22 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handles keyboard inputs to move the character horizontally and jump.
+   * Handles ongoing movement logic, boundary checks, and camera tracking for the character.
+   * @returns {void}
    */
   handleMovement() {
     this.walking_sound.pause();
     this.checkHorizontalMove();
     this.checkJump();
+    if (this.y > 135) {
+      this.y = 135;
+    }
     this.world.camera_x = -this.x + 100;
   }
 
   /**
-   * Checks if the character should move left or right based on input.
+   * Checks keyboard input for moving right or left within level bounds.
+   * @returns {void}
    */
   checkHorizontalMove() {
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -132,6 +147,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Moves the character to the right, resets the idle timer, and plays walking sound if grounded.
+   * @returns {void}
+   */
   moveCharacterRight() {
     this.moveRight();
     this.resetIdleTimer();
@@ -140,6 +159,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Moves the character to the left, resets the idle timer, and plays walking sound if grounded.
+   * @returns {void}
+   */
   moveCharacterLeft() {
     this.moveLeft();
     this.resetIdleTimer();
@@ -148,6 +171,10 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Checks if the jump key (SPACE) is pressed and the character is grounded to trigger a jump.
+   * @returns {void}
+   */
   checkJump() {
     if (this.world.keyboard.SPACE && !this.isAboveGround()) {
       this.jump();
@@ -157,7 +184,16 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handles the visual animations depending on the character's state (dead, hurt, jumping, walking).
+   * Triggers a vertical jump by setting an upward speed.
+   * @returns {void}
+   */
+  jump() {
+    this.speedY = 35;
+  }
+
+  /**
+   * Manages the visual state and playback of animations based on health status (dead, hurt, or alive).
+   * @returns {void}
    */
   handleAnimation() {
     if (this.isDead()) {
@@ -171,16 +207,41 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Manages animations when the character is alive (jumping, walking, or idling).
+   * @returns {void}
+   */
   handleAliveAnimation() {
     if (this.isAboveGround()) {
-      this.playAnimation(this.IMAGES_JUMPING);
-    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-      this.playAnimation(this.IMAGES_WALKING);
+      this.playJumpAnimation();
     } else {
-      this.handleIdleAnimation();
+      this.currentJumpFrame = 0;
+      
+      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        this.playAnimation(this.IMAGES_WALKING);
+      } else {
+        this.handleIdleAnimation();
+      }
     }
   }
 
+  /**
+   * Progresses through the custom jump animation frame by frame.
+   * @returns {void}
+   */
+  playJumpAnimation() {
+    let path = this.IMAGES_JUMPING[this.currentJumpFrame];
+    this.img = this.imageCache[path];
+    
+    if (this.currentJumpFrame < this.IMAGES_JUMPING.length - 1) {
+      this.currentJumpFrame++;
+    }
+  }
+
+  /**
+   * Handles standard idle or long idle (with snoring sound) animations based on inactivity duration.
+   * @returns {void}
+   */
   handleIdleAnimation() {
     let timePassed = new Date().getTime() - this.lastMoveTime;
     if (timePassed >= 15000) {
@@ -189,5 +250,22 @@ class Character extends MovableObject {
     } else {
       this.playAnimation(this.IMAGES_IDLE);
     }
+  }
+
+  /**
+   * Overrides gravity application to include a terminal falling velocity limit for the character.
+   * @returns {void}
+   */
+  applyGravity() {
+    setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+        
+        if (this.speedY < -20) {
+          this.speedY = -20; 
+        }
+      }
+    }, 1000 / 25);
   }
 }

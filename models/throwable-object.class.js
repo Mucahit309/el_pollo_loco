@@ -24,7 +24,7 @@ class ThrowableObject extends MovableObject {
   break_sound = new Audio('sounds/throwable/bottleBreak.mp3');
 
   /**
-   * Creates a throwable object at a specific position.
+   * Creates a throwable object at a specific position, loads images, sets dimensions, and starts throwing and animation loops.
    * @param {number} x - The x-coordinate to spawn the object.
    * @param {number} y - The y-coordinate to spawn the object.
    */
@@ -43,7 +43,8 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Handles the flying trajectory of the bottle.
+   * Handles the flying trajectory, gravity application, and horizontal movement of the bottle.
+   * @returns {void}
    */
   throw() {
     this.speedY = 7;
@@ -56,7 +57,8 @@ class ThrowableObject extends MovableObject {
   }
 
   /**
-   * Stops the bottle from moving and triggers the splash animation.
+   * Stops the bottle from moving, flags it as splashed, halts vertical speed, and plays the break sound.
+   * @returns {void}
    */
   splash() {
     this.isSplashed = true;
@@ -64,6 +66,10 @@ class ThrowableObject extends MovableObject {
     this.break_sound.play();
   }
 
+  /**
+   * Manages the continuous animation loop, cycling through rotation frames in flight or splash frames upon impact.
+   * @returns {void}
+   */
   animate() {
     setInterval(() => {
       if (!this.isSplashed) {

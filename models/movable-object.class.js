@@ -17,7 +17,8 @@ class MovableObject extends DrawableObject {
   };
 
   /**
-   * Applies gravity to the object, pulling it down over time.
+   * Applies gravity to the object, pulling it down over time at regular intervals.
+   * @returns {void}
    */
   applyGravity() {
     setInterval(() => {
@@ -29,8 +30,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Checks if the object is currently in the air.
-   * @returns {boolean} True if the object is above ground, false otherwise.
+   * Checks if the object is currently in the air (above the ground).
+   * @returns {boolean} True if the object is above ground or a throwable object, false otherwise.
    */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
@@ -41,8 +42,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Checks for a collision with another movable object.
-   * @param {MovableObject} mo - The other object to check against.
+   * Checks for an axis-aligned bounding box collision with another movable object using custom offsets.
+   * @param {MovableObject} mo - The other object to check collision against.
    * @returns {boolean} True if colliding, false otherwise.
    */
   isColliding(mo) {
@@ -55,8 +56,9 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Inflicts damage on the object, reducing its energy.
-   * @param {number} damage - The amount of damage to inflict.
+   * Inflicts damage on the object, reducing its energy and updating the last hit timestamp.
+   * @param {number} [damage=20] - The amount of damage to inflict.
+   * @returns {void}
    */
   hit(damage = 20) {
     this.energy -= damage;
@@ -68,7 +70,7 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Checks if the object was recently hurt.
+   * Checks if the object was recently hurt within the last 1 second.
    * @returns {boolean} True if hurt in the last 1 second, false otherwise.
    */
   isHurt() {
@@ -78,7 +80,7 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Checks if the object is dead (energy reached 0).
+   * Checks if the object is dead (its energy has reached 0).
    * @returns {boolean} True if energy is 0, false otherwise.
    */
   isDead() {
@@ -86,8 +88,9 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Cycles through an array of images to animate the object.
-   * @param {string[]} images - The array of image paths for the animation.
+   * Cycles through an array of image paths to animate the object frame by frame.
+   * @param {string[]} images - The array of image paths for the animation sequence.
+   * @returns {void}
    */
   playAnimation(images) {
     let i = this.currentImage % images.length;
@@ -97,7 +100,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Moves the object to the right continuously.
+   * Moves the object continuously to the right and sets facing direction to normal.
+   * @returns {void}
    */
   moveRight() {
     this.x += this.speed;
@@ -105,7 +109,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Moves the object to the left continuously.
+   * Moves the object continuously to the left and sets facing direction to flipped.
+   * @returns {void}
    */
   moveLeft() {
     this.x -= this.speed;
@@ -113,7 +118,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Initiates a jump by setting the vertical speed.
+   * Initiates a standard jump by setting an upward vertical speed.
+   * @returns {void}
    */
   jump() {
     this.speedY = 15;

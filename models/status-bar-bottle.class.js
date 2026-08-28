@@ -1,3 +1,7 @@
+/**
+ * Represents the status bar for tracking and displaying collected salsa bottles on the user interface.
+ * @extends DrawableObject
+ */
 class StatusBarBottle extends DrawableObject {
     IMAGES = [
         'img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
@@ -9,6 +13,10 @@ class StatusBarBottle extends DrawableObject {
     ];
     percentage = 0;
 
+    /**
+     * Initializes a new instance of the StatusBarBottle class, loads status bar images, 
+     * sets screen coordinates, dimensions, and initializes the percentage to 0.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
@@ -19,12 +27,21 @@ class StatusBarBottle extends DrawableObject {
         this.setPercentage(0);
     }
 
+    /**
+     * Updates the current bottle percentage and changes the displayed image accordingly.
+     * @param {number} percentage - The current percentage value of collected bottles (0 to 100).
+     * @returns {void}
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * Determines the correct array index for the status bar image based on the current percentage.
+     * @returns {number} The index corresponding to the appropriate image level (0 to 5).
+     */
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;

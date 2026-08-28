@@ -13,6 +13,7 @@ class DrawableObject {
   /**
    * Loads a single image from a given path.
    * @param {string} path - The relative path to the image file.
+   * @returns {void}
    */
   loadImage(path) {
     this.img = new Image();
@@ -22,6 +23,7 @@ class DrawableObject {
   /**
    * Draws a frame around the object for debugging collision detection.
    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   * @returns {void}
    */
   drawFrame(ctx) {
     if (
@@ -37,6 +39,7 @@ class DrawableObject {
   /**
    * Draws the object onto the canvas.
    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   * @returns {void}
    */
   draw(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
@@ -45,6 +48,7 @@ class DrawableObject {
   /**
    * Loads multiple images into the image cache for animations.
    * @param {string[]} arr - An array of image paths.
+   * @returns {void}
    */
   loadImages(arr) {
     arr.forEach((path) => {

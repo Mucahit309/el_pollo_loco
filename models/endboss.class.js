@@ -43,6 +43,10 @@ class Endboss extends MovableObject {
     approach_sound = new Audio('sounds/endboss/endbossApproach.wav');
     dead_sound = new Audio('sounds/chicken/chickenDead.mp3');
 
+    /**
+     * Initializes a new instance of the Endboss class, loads alert images, 
+     * caches all other animation frames, sets horizontal spawn position, energy, and starts the loops.
+     */
     constructor() {
         super();
         this.loadImage('img/4_enemie_boss_chicken/2_alert/G5.png');
@@ -56,13 +60,18 @@ class Endboss extends MovableObject {
     }
 
   /**
-   * Starts the Endboss logic, handling movement and animation loops.
+   * Starts the Endboss logic, handling movement and animation intervals.
+   * @returns {void}
    */
   animate() {
     setInterval(() => this.handleMovement(), 300 / 60);
     setInterval(() => this.handleAnimation(), 200);
   }
 
+  /**
+   * Manages movement logic for the Endboss, checking proximity to the character and moving left when active.
+   * @returns {void}
+   */
   handleMovement() {
     this.checkFirstContact();
     if (this.hadFirstContact && !this.isDead()) {
@@ -72,7 +81,8 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Checks if the main character is close enough to trigger the boss fight.
+   * Checks if the main character is close enough to trigger the boss fight and play the approach sound.
+   * @returns {void}
    */
   checkFirstContact() {
     if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
@@ -83,6 +93,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Manages animation states for the Endboss based on its current health and contact status.
+   * @returns {void}
+   */
   handleAnimation() {
     if (this.isDead()) {
       this.handleDead();
@@ -95,6 +109,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Handles the death sequence of the Endboss, playing the death animation, sound effect, and triggering the win screen.
+   * @returns {void}
+   */
   handleDead() {
     this.playAnimation(this.IMAGES_DEAD);
     if (!this.isDeadTriggered) {
