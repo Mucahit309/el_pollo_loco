@@ -125,10 +125,10 @@ class World {
    * @returns {boolean} True if overlapping horizontally within limits, false otherwise.
    */
   isStompingOverlappingX(enemy, frontPadding, backPadding) {
-    let char = this.character;
+    let characterObject = this.character;
     return (
-      char.x + char.width - char.offset.right + frontPadding > enemy.x + enemy.offset.left &&
-      char.x + char.offset.left - backPadding < enemy.x + enemy.width - enemy.offset.right
+      characterObject.x + characterObject.width - characterObject.offset.right + frontPadding > enemy.x + enemy.offset.left &&
+      characterObject.x + characterObject.offset.left - backPadding < enemy.x + enemy.width - enemy.offset.right
     );
   }
 
@@ -206,7 +206,10 @@ class World {
    */
   collectBottle(bottle, index) {
     bottle.collect_sound.muted = isMuted;
-    bottle.collect_sound.play();
+    let playPromise = bottle.collect_sound.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {});
+    }
     if (!this.character.collectedBottles) this.character.collectedBottles = 0;
     this.character.collectedBottles += 20;
     if (this.character.collectedBottles > 100) this.character.collectedBottles = 100;
@@ -295,7 +298,10 @@ class World {
       this.level.coins.forEach((coin, index) => {
         if (this.character.isColliding(coin)) {
           coin.collect_sound.muted = isMuted;
-          coin.collect_sound.play();
+          let playPromise = coin.collect_sound.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((error) => {});
+          }
           if (!this.character.collectedCoins) {
             this.character.collectedCoins = 0;
           }
@@ -345,7 +351,7 @@ class World {
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarBottles);
     this.addToMap(this.coinBar);
-    let endboss = this.level.enemies.find(e => e instanceof Endboss);
+    let endboss = this.level.enemies.find(enemyObject => enemyObject instanceof Endboss);
     if (endboss && endboss.hadFirstContact) {
       this.addToMap(this.statusBarEndboss);
     }
@@ -373,47 +379,47 @@ class World {
    */
   addObjectToMap(objects) {
     if (objects) {
-      objects.forEach((o) => {
-        this.addToMap(o);
+      objects.forEach((objectItem) => {
+        this.addToMap(objectItem);
       });
     }
   }
 
   /**
    * Draws a single movable or drawable object onto the canvas, handling image flipping if necessary.
-   * @param {DrawableObject} mo - The object to draw.
+   * @param {DrawableObject} movableObject - The object to draw.
    * @returns {void}
    */
-  addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
+  addToMap(movableObject) {
+    if (movableObject.otherDirection) {
+      this.flipImage(movableObject);
     }
-    mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
+    movableObject.draw(this.ctx);
+    movableObject.drawFrame(this.ctx);
+    if (movableObject.otherDirection) {
+      this.flipImageBack(movableObject);
     }
   }
 
   /**
    * Horizontally flips the canvas context to render an object facing the opposite direction.
-   * @param {DrawableObject} mo - The object being flipped.
+   * @param {DrawableObject} movableObject - The object being flipped.
    * @returns {void}
    */
-  flipImage(mo) {
+  flipImage(movableObject) {
     this.ctx.save();
-    this.ctx.translate(mo.width, 0);
+    this.ctx.translate(movableObject.width, 0);
     this.ctx.scale(-1, 1);
-    mo.x = mo.x * -1;
+    movableObject.x = movableObject.x * -1;
   }
 
   /**
    * Restores the canvas context and object coordinates after drawing a flipped image.
-   * @param {DrawableObject} mo - The object that was flipped.
+   * @param {DrawableObject} movableObject - The object that was flipped.
    * @returns {void}
    */
-  flipImageBack(mo) {
-    mo.x = mo.x * -1;
+  flipImageBack(movableObject) {
+    movableObject.x = movableObject.x * -1;
     this.ctx.restore();
   }
 }

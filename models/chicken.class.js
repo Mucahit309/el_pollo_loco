@@ -57,7 +57,10 @@ class Chicken extends MovableObject {
       if (this.isDead()) {
         this.loadImage(this.IMAGE_DEAD);
         if (!this.soundPlayed) {
-          this.dead_sound.play();
+          let playPromise = this.dead_sound.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((error) => {});
+          }
           this.soundPlayed = true;
         }
       } else {

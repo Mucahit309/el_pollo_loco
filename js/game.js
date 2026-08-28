@@ -122,8 +122,18 @@ function muteThrowableSounds(status) {
  * @returns {void}
  */
 function startGame() {
-  gameStartSound.play();
-  backgroundTheme.play();
+  let startSoundPromise = gameStartSound.play();
+  if (startSoundPromise !== undefined) {
+    startSoundPromise.catch((error) => {
+    });
+  }
+
+  let themeSoundPromise = backgroundTheme.play();
+  if (themeSoundPromise !== undefined) {
+    themeSoundPromise.catch((error) => {
+    });
+  }
+
   document.getElementById("start-screen").classList.add("d-none");
   document.getElementById("mobile-controls").classList.remove("d-none");
   initLevel();

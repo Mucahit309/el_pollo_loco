@@ -108,7 +108,10 @@ class Character extends MovableObject {
   resetIdleTimer() {
     this.lastMoveTime = new Date().getTime();
     if (this.snoring_sound) {
-      this.snoring_sound.pause();
+      let pausePromise = this.snoring_sound.pause();
+      if (pausePromise !== undefined) {
+        pausePromise.catch((error) => {});
+      }
     }
   }
 
@@ -126,13 +129,20 @@ class Character extends MovableObject {
    * @returns {void}
    */
   handleMovement() {
-    this.walking_sound.pause();
+    if (this.walking_sound) {
+      let pausePromise = this.walking_sound.pause();
+      if (pausePromise !== undefined) {
+        pausePromise.catch((error) => {});
+      }
+    }
     this.checkHorizontalMove();
     this.checkJump();
     if (this.y > 135) {
       this.y = 135;
     }
-    this.world.camera_x = -this.x + 100;
+    if (this.world) {
+      this.world.camera_x = -this.x + 100;
+    }
   }
 
   /**
@@ -140,6 +150,7 @@ class Character extends MovableObject {
    * @returns {void}
    */
   checkHorizontalMove() {
+    if (!this.world || !this.world.keyboard) return;
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
       this.moveCharacterRight();
     } else if (this.world.keyboard.LEFT && this.x > 0) {
@@ -154,8 +165,11 @@ class Character extends MovableObject {
   moveCharacterRight() {
     this.moveRight();
     this.resetIdleTimer();
-    if (!this.isAboveGround()) {
-      this.walking_sound.play();
+    if (!this.isAboveGround() && this.walking_sound) {
+      let playPromise = this.walking_sound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {});
+      }
     }
   }
 
@@ -166,8 +180,11 @@ class Character extends MovableObject {
   moveCharacterLeft() {
     this.moveLeft();
     this.resetIdleTimer();
-    if (!this.isAboveGround()) {
-      this.walking_sound.play();
+    if (!this.isAboveGround() && this.walking_sound) {
+      let playPromise = this.walking_sound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {});
+      }
     }
   }
 
@@ -176,9 +193,15 @@ class Character extends MovableObject {
    * @returns {void}
    */
   checkJump() {
+    if (!this.world || !this.world.keyboard) return;
     if (this.world.keyboard.SPACE && !this.isAboveGround()) {
       this.jump();
-      this.jumping_sound.play();
+      if (this.jumping_sound) {
+        let playPromise = this.jumping_sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {});
+        }
+      }
       this.resetIdleTimer();
     }
   }
@@ -198,10 +221,20 @@ class Character extends MovableObject {
   handleAnimation() {
     if (this.isDead()) {
       this.playAnimation(this.IMAGES_DEAD);
-      this.dead_sound.play();
+      if (this.dead_sound) {
+        let playPromise = this.dead_sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {});
+        }
+      }
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
-      this.hurt_sound.play();
+      if (this.hurt_sound) {
+        let playPromise = this.hurt_sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {});
+        }
+      }
     } else {
       this.handleAliveAnimation();
     }
@@ -212,6 +245,7 @@ class Character extends MovableObject {
    * @returns {void}
    */
   handleAliveAnimation() {
+    if (!this.world || !this.world.keyboard) return;
     if (this.isAboveGround()) {
       this.playJumpAnimation();
     } else {
@@ -246,7 +280,12 @@ class Character extends MovableObject {
     let timePassed = new Date().getTime() - this.lastMoveTime;
     if (timePassed >= 15000) {
       this.playAnimation(this.IMAGES_LONG_IDLE);
-      this.snoring_sound.play();
+      if (this.snoring_sound) {
+        let playPromise = this.snoring_sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {});
+        }
+      }
     } else {
       this.playAnimation(this.IMAGES_IDLE);
     }

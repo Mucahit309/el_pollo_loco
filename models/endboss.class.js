@@ -59,66 +59,72 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-  /**
-   * Starts the Endboss logic, handling movement and animation intervals.
-   * @returns {void}
-   */
-  animate() {
-    setInterval(() => this.handleMovement(), 300 / 60);
-    setInterval(() => this.handleAnimation(), 200);
-  }
-
-  /**
-   * Manages movement logic for the Endboss, checking proximity to the character and moving left when active.
-   * @returns {void}
-   */
-  handleMovement() {
-    this.checkFirstContact();
-    if (this.hadFirstContact && !this.isDead()) {
-      this.moveLeft();
-      this.otherDirection = false;
+    /**
+     * Starts the Endboss logic, handling movement and animation intervals.
+     * @returns {void}
+     */
+    animate() {
+        setInterval(() => this.handleMovement(), 300 / 60);
+        setInterval(() => this.handleAnimation(), 200);
     }
-  }
 
-  /**
-   * Checks if the main character is close enough to trigger the boss fight and play the approach sound.
-   * @returns {void}
-   */
-  checkFirstContact() {
-    if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
-      if (!this.hadFirstContact) {
-        this.approach_sound.play();
-      }
-      this.hadFirstContact = true;
+    /**
+     * Manages movement logic for the Endboss, checking proximity to the character and moving left when active.
+     * @returns {void}
+     */
+    handleMovement() {
+        this.checkFirstContact();
+        if (this.hadFirstContact && !this.isDead()) {
+            this.moveLeft();
+            this.otherDirection = false;
+        }
     }
-  }
 
-  /**
-   * Manages animation states for the Endboss based on its current health and contact status.
-   * @returns {void}
-   */
-  handleAnimation() {
-    if (this.isDead()) {
-      this.handleDead();
-    } else if (this.isHurt()) {
-      this.playAnimation(this.IMAGES_HURT);
-    } else if (this.hadFirstContact) {
-      this.playAnimation(this.IMAGES_WALKING);
-    } else {
-      this.playAnimation(this.IMAGES_ALERT); 
+    /**
+     * Checks if the main character is close enough to trigger the boss fight and play the approach sound.
+     * @returns {void}
+     */
+    checkFirstContact() {
+        if (world && world.character && this.x - world.character.x < 500 && !this.isDead()) {
+            if (!this.hadFirstContact) {
+                let playPromise = this.approach_sound.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch((error) => {});
+                }
+            }
+            this.hadFirstContact = true;
+        }
     }
-  }
 
-  /**
-   * Handles the death sequence of the Endboss, playing the death animation, sound effect, and triggering the win screen.
-   * @returns {void}
-   */
-  handleDead() {
-    this.playAnimation(this.IMAGES_DEAD);
-    if (!this.isDeadTriggered) {
-      this.dead_sound.play();
-      this.isDeadTriggered = true;
-      setTimeout(() => showWinScreen(), 1000);
+    /**
+     * Manages animation states for the Endboss based on its current health and contact status.
+     * @returns {void}
+     */
+    handleAnimation() {
+        if (this.isDead()) {
+            this.handleDead();
+        } else if (this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT);
+        } else if (this.hadFirstContact) {
+            this.playAnimation(this.IMAGES_WALKING);
+        } else {
+            this.playAnimation(this.IMAGES_ALERT); 
+        }
     }
-  }
+
+    /**
+     * Handles the death sequence of the Endboss, playing the death animation, sound effect, and triggering the win screen.
+     * @returns {void}
+     */
+    handleDead() {
+        this.playAnimation(this.IMAGES_DEAD);
+        if (!this.isDeadTriggered) {
+            let playPromise = this.dead_sound.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {});
+            }
+            this.isDeadTriggered = true;
+            setTimeout(() => showWinScreen(), 1000);
+        }
+    }
 }

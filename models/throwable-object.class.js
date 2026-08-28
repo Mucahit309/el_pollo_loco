@@ -63,7 +63,10 @@ class ThrowableObject extends MovableObject {
   splash() {
     this.isSplashed = true;
     this.speedY = 0;
-    this.break_sound.play();
+    let playPromise = this.break_sound.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {});
+    }
   }
 
   /**
